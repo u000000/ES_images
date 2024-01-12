@@ -1,10 +1,6 @@
 import cv2
 import numpy as np
 
-# Set the lambda matrix the same type and size as input
-size = 1280, 720, 3
-m = np.zeros(size, dtype=np.uint8)
-
 # Specify input and output coordinates that is used
 # to calculate the transformation matrix
 input_pts = np.float32([[590,265],[850,203],[838,443],[400,544]])
