@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'nutPosOrient = nut_position_direction.nutPosOrient:main'
+            'nut_position_orientation = nut_position_orientation.nut_position_orientation:main'
+            'test_publish = nut_position_orientation.test_publish_image:main'
         ],
     },
 )

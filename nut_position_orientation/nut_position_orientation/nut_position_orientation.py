@@ -8,10 +8,10 @@ import numpy as np
 from es_interfaces.msg import PosAngle
 from es_interfaces.msg import Pos
 
-class nutPosOrient(Node):
+class nutPosOrientNode(Node):
     
     def __init__(self):
-        super().__init__('nutPosOrient')
+        super().__init__('nut_position_orientation')
         self.pos_tool_pub = self.create_publisher(PosAngle, 'pos_angle_pub', 10)
         self.pose_subscriber = self.create_subscription(Image, 'test_image', self.image_callback, 10)
         self.bridge = cv_bridge.CvBridge()
@@ -107,7 +107,7 @@ class nutPosOrient(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = nutPosOrient()
+    node = nutPosOrientNode()
     rclpy.spin(node)
     rclpy.shutdown()
 

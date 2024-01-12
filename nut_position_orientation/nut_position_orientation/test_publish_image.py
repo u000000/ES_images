@@ -6,7 +6,7 @@ import cv_bridge
 import cv2
 import numpy as np
 
-class testPublishImage(Node):
+class testPublishImageNode(Node):
     def __init__(self):
         super().__init__('test_publish')
         self.bridge = cv_bridge.CvBridge()
@@ -30,7 +30,7 @@ class testPublishImage(Node):
         
 def main(args=None):
     rclpy.init(args=args)
-    node = testPublishImage()
+    node = testPublishImageNode()
     rclpy.spin_once(node)
     rclpy.shutdown()
 
