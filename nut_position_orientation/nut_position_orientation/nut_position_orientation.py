@@ -26,6 +26,8 @@ class nutPosOrientNode(Node):
             """# Convert msg to cv2 format"""
             image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
             image_1 = image.copy()
+            
+            
             c = (int((image.shape[1])/2), int((image.shape[0])/2))
 
             """# Prepare image"""
@@ -39,7 +41,7 @@ class nutPosOrientNode(Node):
             image = cv2.bitwise_not(image_ero)
 
             # Look for contours
-            conts, hierarchy = cv2.findContours(image_1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            conts, hierarchy = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
             centers = []
             for cont in conts:
@@ -53,9 +55,9 @@ class nutPosOrientNode(Node):
             for center in centers:
                 cv2.circle(image, center, 3, (5, 92, 94), 3)
                 cv2.circle(image, c, 3, (0, 82, 88), 3)
-                self.nutpos.x = center[0] - c[0]
-                self.nutpos.y = center[1] - c[1]
-                self.get_logger().info('Nut position: ' + self.nutpos)
+                self.nutpos.x = float(center[0] - c[0])
+                self.nutpos.y = float(center[1] - c[1])
+                self.get_logger().info('Nut position: ' + str(self.nutpos))
 
             """# Calculate tool movement angle"""
             # Find the furthest point of the contour (from its center of mass)
@@ -71,25 +73,26 @@ class nutPosOrientNode(Node):
 
             # Calculate angle
             offset_angle_of_camera = 18.5
-            tool_angle = 0
+            self.tool_angle = 0
             
             if (center[0]<max_point[0] and center[1]>max_point[1]):
                 # I quarter
-                tool_angle = -np.degrees(np.arctan((max_point[0]-center[0])/(center[1]-max_point[1]))) - offset_angle_of_camera
+                self.tool_angle = -np.degrees(np.arctan((max_point[0]-center[0])/(center[1]-max_point[1]))) - offset_angle_of_camera
             elif (center[0]<max_point[0] and center[1]<max_point[1]):
                 # IV quarter
-                tool_angle = 90 - offset_angle_of_camera - np.degrees(np.arctan((max_point[1]-center[1])/(max_point[0]-center[0])))
+                self.tool_angle = 90 - offset_angle_of_camera - np.degrees(np.arctan((max_point[1]-center[1])/(max_point[0]-center[0])))
             elif (center[0]>max_point[0] and center[1]<max_point[1]):
                 # III quarter
-                tool_angle = -np.degrees(np.arctan((center[0]-max_point[0])/(max_point[1]-center[1]))) - offset_angle_of_camera
+                self.tool_angle = -np.degrees(np.arctan((center[0]-max_point[0])/(max_point[1]-center[1]))) - offset_angle_of_camera
             elif (center[0]>max_point[0] and center[1]>max_point[1]):
                 # II quarter
-                tool_angle = 90 - offset_angle_of_camera - np.degrees(np.arctan((center[1]-max_point[1])/(center[0]-max_point[0])))
+                self.tool_angle = 90 - offset_angle_of_camera - np.degrees(np.arctan((center[1]-max_point[1])/(center[0]-max_point[0])))
             elif point[0]==center[0]:
-                tool_angle = -18.5
+                self.tool_angle = -18.5
             elif point[1]==center[1]:
-                tool_angle = 90-18.5
-                
+                self.tool_angle = 90-18.5
+            
+            self.get_logger().info('Angle: ' + str(self.tool_angle))
             self.send_msg_data()
                      
         except Exception as e:
@@ -101,6 +104,7 @@ class nutPosOrientNode(Node):
         # create message
         msg = PosAngle()
         msg.position = self.nutpos
+        msg.angle = self.tool_angle
         # publish the msg
         self.pos_tool_pub.publish(msg)
 

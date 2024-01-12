@@ -15,8 +15,8 @@ class testPublishImageNode(Node):
         # Parameters
         
         
-        self.cv_image = cv2.imread('num_710.png')
-        self.msg_image = self.bridge.cv2_to_imgmsg((self.cv_image), "bgr8")
+        self.cv_image = cv2.imread('/home/adam/ES_images/src/nut_position_orientation/nut_position_orientation/num_710.png')
+        self.msg_image = self.bridge.cv2_to_imgmsg((self.cv_image), 'bgr8')
         
         self.send_image_command()
         
@@ -31,7 +31,7 @@ class testPublishImageNode(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = testPublishImageNode()
-    rclpy.spin_once(node)
+    node.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':
