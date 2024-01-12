@@ -13,7 +13,7 @@ class nutPosOrient(Node):
     def __init__(self):
         super().__init__('nutPosOrient')
         self.pos_tool_pub = self.create_publisher(PosAngle, 'pos_angle_pub', 10)
-        self.pose_subscriber = self.create_subscription(Image, '', self.image_callback, 10)
+        self.pose_subscriber = self.create_subscription(Image, 'test_image', self.image_callback, 10)
         self.bridge = cv_bridge.CvBridge()
         
         # Parameters
